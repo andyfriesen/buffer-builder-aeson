@@ -16,9 +16,12 @@ import Data.Int (Int32)
 maxDecimalNumber = Scientific.scientific (fromIntegral (maxBound :: Int32)) 0
 
 instance ToJson Value where
+    {-# INLINE appendJson #-}
     appendJson val = case val of
-        Object o -> appendJson $ mconcat [k .= v | (k, v) <- HashMap.toList o]
-        Array a -> array a
+        Object o ->
+            let f a k v = a <> k .= v
+            in appendJson $ HashMap.foldlWithKey' f mempty o
+        Array a -> vector a
         String s -> appendJson s
         Number n
             | Scientific.base10Exponent n < 0 || (abs n) >= maxDecimalNumber ->
