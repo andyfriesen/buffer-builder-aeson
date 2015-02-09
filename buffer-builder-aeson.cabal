@@ -74,3 +74,4 @@ benchmark json-bench
                , text
                , deepseq
                , criterion
+               , vector

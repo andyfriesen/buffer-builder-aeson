@@ -20,6 +20,8 @@ import           Data.String (IsString)
 import qualified Data.Aeson as Aeson
 import           Data.Aeson ((.:))
 import           Control.DeepSeq (NFData (..), force)
+import qualified Data.Vector as Vector
+import qualified Data.Text as Text
 
 newtype Utf8 = Utf8 { unUtf8 :: BS.ByteString }
     deriving (Show, Eq, IsString)
@@ -267,8 +269,14 @@ main = do
     let parsedUserList :: [Aeson.Value]
         Just parsedUserList = Aeson.decode lazyContent
 
-    defaultMain [ bgroup "render"
-                    [ bench "bufferbuilder" $ nf Json.encodeJson parsedUserList
-                    , bench "aeson" $ nf Aeson.encode parsedUserList
-                    ]
+    let compareBench name value =
+            bgroup name
+                [ bench "bufferbuilder" $ nf Json.encodeJson value
+                , bench "aeson"         $ nf Aeson.encode value
                 ]
+
+    defaultMain
+        [ compareBench "userlist" parsedUserList
+        , compareBench "intlist" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.Number . fromIntegral) ([0..65535] :: [Int])
+        , compareBench "stringlist" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.String . Text.pack . show) ([0..65535] :: [Int])
+        ]
