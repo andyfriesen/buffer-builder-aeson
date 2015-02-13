@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings, RecordWildCards #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MagicHash #-}
+{-# LANGUAGE BangPatterns #-}
 
 module Main where
 
@@ -21,6 +22,7 @@ import qualified Data.Aeson as Aeson
 import           Data.Aeson ((.:))
 import           Control.DeepSeq (NFData (..), force)
 import qualified Data.Vector as Vector
+import qualified Data.Vector.Unboxed as UnboxedVector
 import qualified Data.Text as Text
 
 newtype Utf8 = Utf8 { unUtf8 :: BS.ByteString }
@@ -269,7 +271,7 @@ main = do
     let parsedUserList :: [Aeson.Value]
         Just parsedUserList = Aeson.decode lazyContent
 
-    let compareBench name value =
+    let compareBench name !value =
             bgroup name
                 [ bench "bufferbuilder" $ nf Json.encodeJson value
                 , bench "aeson"         $ nf Aeson.encode value
@@ -279,4 +281,6 @@ main = do
         [ compareBench "userlist" parsedUserList
         , compareBench "intlist" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.Number . fromIntegral) ([0..65535] :: [Int])
         , compareBench "stringlist" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.String . Text.pack . show) ([0..65535] :: [Int])
+        , bench "intvector" $ nf (Json.runBuilder . Json.vector) (UnboxedVector.fromList $! [0..65535] :: UnboxedVector.Vector Int)
+        , compareBench "truelist" $ Aeson.Array $ Vector.fromList $ fmap (const $ Aeson.Bool True) ([0..65535] :: [Int])
         ]

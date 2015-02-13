@@ -1,10 +1,12 @@
-
+{-# LANGUAGE MagicHash #-}
 module Data.BufferBuilder.Aeson where
 
+import           Control.Monad (when)
 import           Data.Aeson (Value (..))
 import qualified Data.Aeson as Aeson
-import Data.BufferBuilder.Json
-import Data.Monoid
+import           Data.BufferBuilder.Json
+import qualified Data.BufferBuilder.Utf8 as Utf8Builder
+import           Data.Monoid
 import qualified Data.ByteString.Lazy as BSL
 import qualified Data.ByteString.Builder as BB
 import qualified Data.ByteString.Builder.Scientific as BB
@@ -24,12 +26,16 @@ instance ToJson Value where
         Array a -> vector a
         String s -> appendJson s
         Number n
-            | Scientific.base10Exponent n < 0 || (abs n) >= maxDecimalNumber ->
+            | Scientific.coefficient n < fromIntegral (maxBound :: Int) -> unsafeAppendUtf8Builder $ do
+                Utf8Builder.appendDecimalSignedInt $ fromIntegral $ Scientific.coefficient n
+                let exponent = Scientific.base10Exponent n
+                when (exponent /= 0) $ do
+                    Utf8Builder.appendChar8 'e'
+                    Utf8Builder.appendDecimalSignedInt $ Scientific.base10Exponent n
+            | otherwise ->
                 unsafeAppendBS
                     $ BSL.toStrict
                     $ BB.toLazyByteString
                     $ BB.formatScientificBuilder BB.Fixed Nothing n
-            | otherwise ->
-                appendJson (floor n :: Int)
         Bool b -> appendJson b
         Null -> appendJson (Nothing :: Maybe Int)
