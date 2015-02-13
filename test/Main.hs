@@ -37,6 +37,7 @@ case_serialize_simple_things = do
     ae "true" (encodeJson $ Aeson.Bool True)
     ae "null" (encodeJson $ Aeson.Null)
     ae "9" (encodeJson $ Aeson.Number 9)
+    ae "-9" (encodeJson $ Aeson.Number (-9))
 
 prop_matches_aeson :: Aeson.Value -> Bool
 prop_matches_aeson value =
