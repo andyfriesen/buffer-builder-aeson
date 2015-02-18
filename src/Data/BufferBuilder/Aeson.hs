@@ -31,15 +31,13 @@ instance ToJson Value where
             in appendJson $ HashMap.foldlWithKey' f mempty o
         Array a -> vector a
         String s -> appendJson s
-        Number n -> case Scientific.base10Exponent n of
-            0 -> case Scientific.coefficient n of
-                (S# smallcoeff) -> appendJson (I# smallcoeff)
-                _ -> slowNumber n
-            exp' -> case Scientific.coefficient n of
-                (S# smallcoeff) -> unsafeAppendUtf8Builder $ do
+        Number n -> case Scientific.coefficient n of
+            (S# smallcoeff) -> case Scientific.base10Exponent n of
+                0 -> appendJson (I# smallcoeff)
+                exp' -> unsafeAppendUtf8Builder $ do
                     Utf8Builder.appendDecimalSignedInt (I# smallcoeff)
                     Utf8Builder.appendChar7 'e'
                     Utf8Builder.appendDecimalSignedInt exp'
-                _ -> slowNumber n
+            _ -> slowNumber n
         Bool b -> appendJson b
         Null -> appendNull
