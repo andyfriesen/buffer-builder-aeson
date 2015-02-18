@@ -282,6 +282,7 @@ main = do
         , compareBench "list empty array" $ Aeson.Array $ Vector.replicate 65536 $ Aeson.Array Vector.empty
         , compareBench "list string" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.String . Text.pack . show) ([0..65535] :: [Int])
         , compareBench "list int" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.Number . fromIntegral) ([0..65535] :: [Int])
+        , compareBench "hash string" $ Aeson.object $ fmap (\e -> (Text.pack $ show e, Aeson.Null)) ([0..65535] :: [Int])
 
         , compareBench "list record" parsedUserList
         , bench "intvector" $ nf (Json.runBuilder . Json.vector) (UnboxedVector.fromList $! [0..65535] :: UnboxedVector.Vector Int)
