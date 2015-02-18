@@ -3,7 +3,8 @@
 
 module Data.BufferBuilder.Aeson () where
 
-import           Control.Monad (when)
+import GHC.Base
+import GHC.Integer.GMP.Internals
 import           Data.Aeson (Value (..))
 import           Data.BufferBuilder.Json
 import qualified Data.BufferBuilder.Utf8 as Utf8Builder
@@ -14,11 +15,14 @@ import qualified Data.ByteString.Builder.Scientific as BB
 import qualified Data.Scientific as Scientific
 import qualified Data.HashMap.Strict as HashMap
 
-fitsInInt :: Integer -> Bool
-fitsInInt i =
-    i < fromIntegral (maxBound :: Int) &&
-    i > fromIntegral (minBound :: Int)
-
+-- TODO: this doesn't need to convert the bytestring to strict before appending it
+-- there is an appendBSL
+slowNumber :: Scientific.Scientific -> JsonBuilder
+slowNumber n = unsafeAppendBS
+                    $ BSL.toStrict
+                    $ BB.toLazyByteString
+                    $ BB.formatScientificBuilder BB.Fixed Nothing n
+                    
 instance ToJson Value where
     {-# INLINE appendJson #-}
     appendJson val = case val of
@@ -27,17 +31,15 @@ instance ToJson Value where
             in appendJson $ HashMap.foldlWithKey' f mempty o
         Array a -> vector a
         String s -> appendJson s
-        Number n
-            | fitsInInt (Scientific.coefficient n) -> unsafeAppendUtf8Builder $ do
-                    Utf8Builder.appendDecimalSignedInt $ fromIntegral $ Scientific.coefficient n
-                    let ex = Scientific.base10Exponent n
-                    when (ex /= 0) $ do
-                        Utf8Builder.appendChar8 'e'
-                        Utf8Builder.appendDecimalSignedInt $ Scientific.base10Exponent n
-            | otherwise ->
-                unsafeAppendBS
-                    $ BSL.toStrict
-                    $ BB.toLazyByteString
-                    $ BB.formatScientificBuilder BB.Fixed Nothing n
+        Number n -> case Scientific.base10Exponent n of
+            0 -> case Scientific.coefficient n of
+                (S# smallcoeff) -> appendJson (I# smallcoeff)
+                _ -> slowNumber n
+            exp' -> case Scientific.coefficient n of
+                (S# smallcoeff) -> unsafeAppendUtf8Builder $ do
+                    Utf8Builder.appendDecimalSignedInt (I# smallcoeff)
+                    Utf8Builder.appendChar7 'e'
+                    Utf8Builder.appendDecimalSignedInt exp'
+                _ -> slowNumber n
         Bool b -> appendJson b
-        Null -> appendJson (Nothing :: Maybe Int)
+        Null -> appendNull

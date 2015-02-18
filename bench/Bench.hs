@@ -9,11 +9,8 @@ import Criterion
 
 import Criterion.Main
 
-import Data.Monoid ((<>))
-
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BSL
-
 import qualified Data.BufferBuilder.Json as Json
 import qualified Data.BufferBuilder.Aeson ()
 import           Data.Text (Text)
@@ -25,9 +22,7 @@ import qualified Data.Vector as Vector
 import qualified Data.Vector.Unboxed as UnboxedVector
 import qualified Data.Text as Text
 
-newtype Utf8 = Utf8 { unUtf8 :: BS.ByteString }
-    deriving (Show, Eq, IsString)
-
+{-
 data EyeColor = Green | Blue | Brown
     deriving (Eq, Show)
 data Gender = Male | Female
@@ -181,9 +176,11 @@ instance Aeson.ToJSON User where
         , "greeting" Aeson..= uGreeting
         , "favoriteFruit" Aeson..= uFavouriteFruit
         ]
+-}
 
 --- BufferBuilder instances ---
 
+{-
 instance Json.ToJson EyeColor where
     appendJson ec = Json.appendJson $ case ec of
         Green -> "green" :: Text
@@ -256,6 +253,7 @@ encodeUserNaively User{..} =
         <> "friends" Json..= uFriends
         <> "greeting" Json..= uGreeting
         <> "favoriteFruit" Json..= uFavouriteFruit
+-}
 
 --- ---
 
@@ -278,9 +276,13 @@ main = do
                 ]
 
     defaultMain
-        [ compareBench "userlist" parsedUserList
-        , compareBench "intlist" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.Number . fromIntegral) ([0..65535] :: [Int])
-        , compareBench "stringlist" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.String . Text.pack . show) ([0..65535] :: [Int])
+        [ compareBench "list bool" $ Aeson.Array $ Vector.fromList $ fmap Aeson.Bool $ replicate 65536 False
+        , compareBench "list null" $ Aeson.Array $ Vector.replicate 65536 Aeson.Null
+        , compareBench "list empty object" $ Aeson.Array $ Vector.replicate 65536 $ Aeson.object []
+        , compareBench "list empty array" $ Aeson.Array $ Vector.replicate 65536 $ Aeson.Array Vector.empty
+        , compareBench "list string" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.String . Text.pack . show) ([0..65535] :: [Int])
+        , compareBench "list int" $ Aeson.Array $ Vector.fromList $ fmap (Aeson.Number . fromIntegral) ([0..65535] :: [Int])
+
+        , compareBench "list record" parsedUserList
         , bench "intvector" $ nf (Json.runBuilder . Json.vector) (UnboxedVector.fromList $! [0..65535] :: UnboxedVector.Vector Int)
-        , compareBench "truelist" $ Aeson.Array $ Vector.fromList $ fmap (const $ Aeson.Bool True) ([0..65535] :: [Int])
         ]
