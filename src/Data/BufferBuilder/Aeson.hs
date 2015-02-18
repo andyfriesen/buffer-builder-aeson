@@ -25,19 +25,18 @@ slowNumber n = unsafeAppendBS
                     
 instance ToJson Value where
     {-# INLINE appendJson #-}
-    appendJson val = case val of
-        Object o ->
-            let f a k v = a <> k .= v
-            in appendJson $ HashMap.foldlWithKey' f mempty o
-        Array a -> vector a
-        String s -> appendJson s
-        Number n -> case Scientific.coefficient n of
-            (S# smallcoeff) -> case Scientific.base10Exponent n of
-                0 -> appendJson (I# smallcoeff)
-                exp' -> unsafeAppendUtf8Builder $ do
-                    Utf8Builder.appendDecimalSignedInt (I# smallcoeff)
-                    Utf8Builder.appendChar7 'e'
-                    Utf8Builder.appendDecimalSignedInt exp'
-            _ -> slowNumber n
-        Bool b -> appendJson b
-        Null -> appendNull
+    appendJson (Object o) =
+        let f a k v = a <> k .= v
+        in appendJson $ HashMap.foldlWithKey' f mempty o
+    appendJson (Array a) = vector a
+    appendJson (String s) = appendJson s
+    appendJson (Number n) = case Scientific.coefficient n of
+        (S# smallcoeff) -> case Scientific.base10Exponent n of
+            0 -> appendJson (I# smallcoeff)
+            exp' -> unsafeAppendUtf8Builder $ do
+                Utf8Builder.appendDecimalSignedInt (I# smallcoeff)
+                Utf8Builder.appendChar7 'e'
+                Utf8Builder.appendDecimalSignedInt exp'
+        _ -> slowNumber n
+    appendJson (Bool b) = appendJson b
+    appendJson Null = appendNull
