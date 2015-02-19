@@ -8,12 +8,10 @@ import GHC.Integer.GMP.Internals
 import           Data.Aeson (Value (..))
 import           Data.BufferBuilder.Json
 import qualified Data.BufferBuilder.Utf8 as Utf8Builder
-import           Data.Monoid
 import qualified Data.ByteString.Lazy as BSL
 import qualified Data.ByteString.Lazy.Builder as BB
 import qualified Data.ByteString.Builder.Scientific as BB
 import qualified Data.Scientific as Scientific
-import qualified Data.HashMap.Strict as HashMap
 
 -- TODO: this doesn't need to convert the bytestring to strict before appending it
 -- there is an appendBSL
@@ -22,7 +20,7 @@ slowNumber n = unsafeAppendBS
                     $ BSL.toStrict
                     $ BB.toLazyByteString
                     $ BB.formatScientificBuilder BB.Fixed Nothing n
-                    
+
 instance ToJson Value where
     {-# INLINE appendJson #-}
     appendJson (Object o) = hashMap o
