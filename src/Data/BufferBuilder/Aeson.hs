@@ -25,9 +25,7 @@ slowNumber n = unsafeAppendBS
                     
 instance ToJson Value where
     {-# INLINE appendJson #-}
-    appendJson (Object o) =
-        let f a k v = a <> k .= v
-        in appendJson $ HashMap.foldlWithKey' f mempty o
+    appendJson (Object o) = hashMap o
     appendJson (Array a) = vector a
     appendJson (String s) = appendJson s
     appendJson (Number n) = case Scientific.coefficient n of
