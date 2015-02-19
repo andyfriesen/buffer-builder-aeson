@@ -23,10 +23,10 @@ library
   
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.7 && <4.8
+  build-depends:       base >=4.6 && <4.8
                      , aeson
                      , integer-gmp
-                     , buffer-builder
+                     , buffer-builder >=0.2.0.0
                      , unordered-containers
                      , vector
                      , scientific

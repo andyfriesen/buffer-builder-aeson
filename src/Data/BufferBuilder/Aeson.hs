@@ -10,7 +10,7 @@ import           Data.BufferBuilder.Json
 import qualified Data.BufferBuilder.Utf8 as Utf8Builder
 import           Data.Monoid
 import qualified Data.ByteString.Lazy as BSL
-import qualified Data.ByteString.Builder as BB
+import qualified Data.ByteString.Lazy.Builder as BB
 import qualified Data.ByteString.Builder.Scientific as BB
 import qualified Data.Scientific as Scientific
 import qualified Data.HashMap.Strict as HashMap
