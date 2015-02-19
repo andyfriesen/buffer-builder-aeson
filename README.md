@@ -4,6 +4,8 @@ A very fast [buffer-builder](http://hackage.haskell.org/package/buffer-builder)-
 
 The whole library is a single [Data.BufferBuilder.Json.ToJson](https://github.com/chadaustin/buffer-builder/blob/40361f929868ff62ff0cdafc6bdb0fe4a57d0a16/Data/BufferBuilder/Json.hs#L54) instance for [Data.Aeson.Value](http://hackage.haskell.org/package/aeson-0.8.0.2/docs/Data-Aeson.html#t:Value).
 
+[Criterion benchmark](benchmark_results.txt)
+
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE OverloadedLists #-}

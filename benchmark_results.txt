@@ -1,0 +1,120 @@
+Measured on a Xeon E3-1245 at 3.4GHz
+
+benchmarking list bool/bufferbuilder
+time                 1.516 ms   (1.481 ms .. 1.579 ms)
+                     0.969 R²   (0.929 R² .. 0.998 R²)
+mean                 1.572 ms   (1.529 ms .. 1.675 ms)
+std dev              213.7 μs   (98.76 μs .. 406.1 μs)
+variance introduced by outliers: 81% (severely inflated)
+
+benchmarking list bool/aeson
+time                 2.954 ms   (2.840 ms .. 3.050 ms)
+                     0.964 R²   (0.914 R² .. 0.991 R²)
+mean                 3.795 ms   (3.413 ms .. 4.435 ms)
+std dev              1.620 ms   (959.2 μs .. 2.479 ms)
+variance introduced by outliers: 98% (severely inflated)
+
+benchmarking list null/bufferbuilder
+time                 1.816 ms   (1.792 ms .. 1.863 ms)
+                     0.993 R²   (0.984 R² .. 0.999 R²)
+mean                 1.856 ms   (1.831 ms .. 1.896 ms)
+std dev              101.7 μs   (68.39 μs .. 167.4 μs)
+variance introduced by outliers: 39% (moderately inflated)
+
+benchmarking list null/aeson
+time                 3.164 ms   (2.868 ms .. 3.518 ms)
+                     0.954 R²   (0.917 R² .. 0.997 R²)
+mean                 3.065 ms   (2.951 ms .. 3.431 ms)
+std dev              579.1 μs   (135.5 μs .. 1.141 ms)
+variance introduced by outliers: 87% (severely inflated)
+
+benchmarking list empty object/bufferbuilder
+time                 3.048 ms   (2.756 ms .. 3.327 ms)
+                     0.917 R²   (0.855 R² .. 0.966 R²)
+mean                 3.266 ms   (3.064 ms .. 3.593 ms)
+std dev              788.6 μs   (544.9 μs .. 1.126 ms)
+variance introduced by outliers: 93% (severely inflated)
+
+benchmarking list empty object/aeson
+time                 4.395 ms   (3.543 ms .. 5.424 ms)
+                     0.791 R²   (0.723 R² .. 0.921 R²)
+mean                 4.115 ms   (3.818 ms .. 4.492 ms)
+std dev              1.086 ms   (818.7 μs .. 1.431 ms)
+variance introduced by outliers: 93% (severely inflated)
+
+benchmarking list empty array/bufferbuilder
+time                 2.056 ms   (1.996 ms .. 2.099 ms)
+                     0.953 R²   (0.863 R² .. 0.999 R²)
+mean                 2.264 ms   (2.135 ms .. 2.540 ms)
+std dev              599.6 μs   (74.47 μs .. 999.4 μs)
+variance introduced by outliers: 94% (severely inflated)
+
+benchmarking list empty array/aeson
+time                 2.914 ms   (2.894 ms .. 2.935 ms)
+                     1.000 R²   (0.999 R² .. 1.000 R²)
+mean                 2.904 ms   (2.896 ms .. 2.915 ms)
+std dev              31.98 μs   (25.98 μs .. 39.14 μs)
+
+benchmarking list string/bufferbuilder
+time                 3.603 ms   (3.563 ms .. 3.636 ms)
+                     0.999 R²   (0.999 R² .. 0.999 R²)
+mean                 3.600 ms   (3.582 ms .. 3.621 ms)
+std dev              65.76 μs   (53.93 μs .. 80.48 μs)
+
+benchmarking list string/aeson
+time                 5.551 ms   (5.424 ms .. 5.646 ms)
+                     0.992 R²   (0.975 R² .. 0.999 R²)
+mean                 5.683 ms   (5.586 ms .. 5.956 ms)
+std dev              469.5 μs   (167.7 μs .. 935.5 μs)
+variance introduced by outliers: 50% (moderately inflated)
+
+benchmarking list int/bufferbuilder
+time                 2.701 ms   (2.391 ms .. 3.059 ms)
+                     0.948 R²   (0.926 R² .. 0.994 R²)
+mean                 2.417 ms   (2.355 ms .. 2.530 ms)
+std dev              258.6 μs   (137.8 μs .. 444.2 μs)
+variance introduced by outliers: 70% (severely inflated)
+
+benchmarking list int/aeson
+time                 4.381 ms   (4.088 ms .. 4.712 ms)
+                     0.968 R²   (0.930 R² .. 0.998 R²)
+mean                 4.643 ms   (4.416 ms .. 5.393 ms)
+std dev              1.122 ms   (265.0 μs .. 2.354 ms)
+variance introduced by outliers: 92% (severely inflated)
+
+benchmarking hash string/bufferbuilder
+time                 13.83 ms   (12.51 ms .. 15.43 ms)
+                     0.955 R²   (0.915 R² .. 0.997 R²)
+mean                 12.93 ms   (12.52 ms .. 13.57 ms)
+std dev              1.275 ms   (761.7 μs .. 2.091 ms)
+variance introduced by outliers: 48% (moderately inflated)
+
+benchmarking hash string/aeson
+time                 14.54 ms   (14.00 ms .. 14.95 ms)
+                     0.994 R²   (0.991 R² .. 0.997 R²)
+mean                 14.64 ms   (14.34 ms .. 15.31 ms)
+std dev              1.075 ms   (578.2 μs .. 2.009 ms)
+variance introduced by outliers: 34% (moderately inflated)
+
+benchmarking list record/bufferbuilder
+time                 546.4 μs   (536.0 μs .. 553.6 μs)
+                     0.999 R²   (0.998 R² .. 0.999 R²)
+mean                 533.3 μs   (530.2 μs .. 538.4 μs)
+std dev              13.24 μs   (10.53 μs .. 16.96 μs)
+variance introduced by outliers: 16% (moderately inflated)
+
+benchmarking list record/aeson
+time                 1.074 ms   (1.058 ms .. 1.091 ms)
+                     0.998 R²   (0.995 R² .. 1.000 R²)
+mean                 1.092 ms   (1.073 ms .. 1.135 ms)
+std dev              87.35 μs   (22.92 μs .. 163.4 μs)
+variance introduced by outliers: 62% (severely inflated)
+
+benchmarking intvector
+time                 1.722 ms   (1.676 ms .. 1.758 ms)
+                     0.977 R²   (0.940 R² .. 0.997 R²)
+mean                 1.880 ms   (1.795 ms .. 2.147 ms)
+std dev              446.8 μs   (201.9 μs .. 894.2 μs)
+variance introduced by outliers: 93% (severely inflated)
+
+Benchmark json-bench: FINISH
