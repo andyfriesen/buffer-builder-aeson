@@ -2,25 +2,22 @@
 
 module Main where
 
-import Test.Tasty
-import Test.Tasty.TH
-import Test.Tasty.HUnit
-import Test.Tasty.QuickCheck
-import Data.Monoid ((<>), Monoid (mconcat, mempty))
-import Data.String (IsString (..))
-import Data.Text (Text)
-import Data.BufferBuilder.Json
-import Data.BufferBuilder.Aeson
+import           Test.Tasty
+import           Test.Tasty.TH
+import           Test.Tasty.HUnit
+import           Test.Tasty.QuickCheck
+import           Data.String (IsString (..))
+import           Data.BufferBuilder.Json
+import           Data.BufferBuilder.Aeson ()
+import           Data.ByteString (ByteString)
+import qualified Data.ByteString as BS
 import qualified Data.Attoparsec.ByteString as Atto
-import Data.Scientific
 import qualified Data.Aeson.Parser as JsonParse
 import qualified Data.Aeson as Aeson
-import qualified Data.Aeson as Aeson
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as BSL
-import AesonQuickCheck ()
-import Debug.Trace
+import           AesonQuickCheck ()
+import           Debug.Trace
 
+ae :: String -> ByteString -> IO ()
 ae expected actual = assertEqual expected (fromString expected) actual
 
 decodeJsonFragment :: Aeson.FromJSON j => BS.ByteString -> Maybe j
@@ -32,6 +29,7 @@ decodeJsonFragment str = case parsed of
   where
     parsed = Atto.parseOnly JsonParse.value' str
 
+case_serialize_simple_things :: IO ()
 case_serialize_simple_things = do
     ae "false" (encodeJson $ Aeson.Bool False)
     ae "true" (encodeJson $ Aeson.Bool True)
