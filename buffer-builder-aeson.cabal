@@ -2,12 +2,38 @@
 --  documentation, see http://haskell.org/cabal/users-guide/
 
 name:                buffer-builder-aeson
-version:             0.1.0.0
+version:             0.2.0.0
 synopsis:            Serialize Aeson values with Data.BufferBuilder
--- description:         
+description:
+
+    A very fast BufferBuilder-based JSON encoder for Aeson.
+    .
+    The whole library is a a single orphan instance for Aeson.Value.
+    .
+    > import Data.Aeson (object, (.=), Value (..))
+    > import Data.BufferBuilder.Json (encodeJson)
+    > import Data.BufferBuilder.Aeson ()
+    > import qualified Data.ByteString as BS
+    > 
+    > stuff :: Value
+    > stuff = Array
+    >     [ object
+    >         [ "name" .= ("eggs" :: String)
+    >         , "price" .= (3.141592 :: Double)
+    >         ]
+    >     , object
+    >         [ "name" .= ("cheese" :: String)
+    >         , "price" .= (0.57721 :: Double)
+    >         ]
+    >     ]
+    > 
+    > main :: IO ()
+    > main = do
+    >     BS.putStrLn $ encodeJson stuff
+
 license:             MIT
 license-file:        LICENSE
-author:              Andy Friesen
+author:              Andy Friesen, Chad Austin
 maintainer:          andy.friesen@gmail.com
 -- copyright:           
 category:            Data
@@ -15,11 +41,16 @@ build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
 
+source-repository this
+  type:     git
+  location: https://github.com/andyfriesen/buffer-builder-aeson
+  tag:      0.2.0.0
+
 library
   exposed-modules:     Data.BufferBuilder.Aeson
   hs-source-dirs:      src
   ghc-options: -O2 -Wall
-  ghc-options: -ddump-ds -ddump-simpl -ddump-stg -ddump-opt-cmm -ddump-asm -ddump-to-file
+  -- ghc-options: -ddump-ds -ddump-simpl -ddump-stg -ddump-opt-cmm -ddump-asm -ddump-to-file
   
   -- other-modules:       
   -- other-extensions:    
