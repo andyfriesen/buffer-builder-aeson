@@ -15,6 +15,11 @@ build-type:          Simple
 -- extra-source-files:
 cabal-version:       >=1.10
 
+source-repository this
+  type:     git
+  location: https://github.com/andyfriesen/buffer-builder-aeson
+  tag:      0.2.0.4
+
 library
   exposed-modules:     Data.BufferBuilder.Aeson
   hs-source-dirs:      src
