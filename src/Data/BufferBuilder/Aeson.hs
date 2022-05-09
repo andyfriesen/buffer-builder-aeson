@@ -10,9 +10,12 @@ import           Data.BufferBuilder.Json (ToJson (..), nullValue, unsafeAppendBS
 import qualified Data.BufferBuilder.Json as Json
 import qualified Data.BufferBuilder.Utf8 as Utf8Builder
 import qualified Data.ByteString.Lazy as BSL
-import qualified Data.ByteString.Lazy.Builder as BB
+import qualified Data.ByteString.Builder as BB
 import qualified Data.ByteString.Builder.Scientific as BB
 import qualified Data.Scientific as Scientific
+
+import Data.Aeson.KeyMap (foldrWithKey) 
+import Data.Aeson.Key (toText) 
 
 -- TODO: this doesn't need to convert the bytestring to strict before appending it
 -- there is an appendBSL
@@ -24,7 +27,10 @@ slowNumber n = unsafeAppendBS
 
 instance ToJson Value where
     {-# INLINE toJson #-}
-    toJson (Object o) = toJson o
+    toJson (Object o) = toJson $ foldrWithKey 
+                            (\k v built -> (toText k Json..= (toJson v)) <> built) 
+                            mempty 
+                            o
     toJson (Array a) = toJson a
     toJson (String s) = toJson s
     toJson (Number n) = case Scientific.coefficient n of
