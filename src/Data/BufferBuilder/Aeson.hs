@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE MagicHash #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-} 
 
@@ -14,8 +15,10 @@ import qualified Data.ByteString.Builder as BB
 import qualified Data.ByteString.Builder.Scientific as BB
 import qualified Data.Scientific as Scientific
 
-import Data.Aeson.KeyMap (foldrWithKey) 
-import Data.Aeson.Key (toText) 
+#if MIN_VERSION_aeson(2,0,0)
+import Data.Aeson.KeyMap (foldrWithKey)
+import Data.Aeson.Key (toText)
+#endif
 
 -- TODO: this doesn't need to convert the bytestring to strict before appending it
 -- there is an appendBSL
@@ -27,10 +30,14 @@ slowNumber n = unsafeAppendBS
 
 instance ToJson Value where
     {-# INLINE toJson #-}
-    toJson (Object o) = toJson $ foldrWithKey 
-                            (\k v built -> (toText k Json..= (toJson v)) <> built) 
-                            mempty 
+#if MIN_VERSION_aeson(2,0,0)
+    toJson (Object o) = toJson $ foldrWithKey
+                            (\k v built -> (toText k Json..= (toJson v)) <> built)
+                            mempty
                             o
+#else
+    toJson (Object o) = toJson o
+#endif
     toJson (Array a) = toJson a
     toJson (String s) = toJson s
     toJson (Number n) = case Scientific.coefficient n of
