@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module AesonQuickCheck where
@@ -21,6 +22,7 @@ instance Arbitrary Text where
     arbitrary = fmap T.pack $ arbitrary
     shrink txt = fmap T.pack $ shrink $ T.unpack txt
 
+#if !MIN_VERSION_aeson(2, 0, 3)
 arbitraryArray :: (Arbitrary a) => Gen [a]
 arbitraryArray = sized $ \s -> do
     (Positive len) <- arbitrary
@@ -52,6 +54,7 @@ instance Arbitrary Value where
         Number _ -> []
         Bool _   -> []
         Null     -> []
+#endif
 
 instance Arbitrary Scientific where
     arbitrary = do
