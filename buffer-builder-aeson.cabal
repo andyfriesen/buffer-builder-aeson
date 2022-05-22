@@ -2,7 +2,7 @@
 --  documentation, see http://haskell.org/cabal/users-guide/
 
 name:                buffer-builder-aeson
-version:             0.2.0.4
+version:             0.2.0.5
 synopsis:            Serialize Aeson values with Data.BufferBuilder
 -- description:
 license:             MIT
